@@ -132,7 +132,7 @@ func CheckResponse(r *http.Response) error {
 		if string(firstByte) == "-" {
 			errorString, _ := reader.ReadString('\n')
 			if matched, _ := regexp.MatchString("-\\d+,.+", errorString); matched == false {
-				return fmt.Errorf("invalid message format ")
+				return fmt.Errorf("invalid message format")
 			}
 			errors := strings.Split(errorString, ",")
 			errorCode, _ := strconv.Atoi(errors[0])
