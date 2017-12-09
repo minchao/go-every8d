@@ -2,6 +2,7 @@ package every8d
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -47,6 +48,15 @@ func testMethod(t *testing.T, r *http.Request, want string) {
 	}
 }
 
+func testURLParseError(t *testing.T, err error) {
+	if err == nil {
+		t.Errorf("Expected error to be returned")
+	}
+	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
+		t.Errorf("Expected URL parse error, got %+v", err)
+	}
+}
+
 func TestNewClient(t *testing.T) {
 	c := NewClient("username", "password", nil)
 
@@ -58,7 +68,13 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestNewRequest(t *testing.T) {
+func TestClient_NewRequest_badURL(t *testing.T) {
+	c := NewClient("", "", nil)
+	_, err := c.NewRequest("GET", ":", nil)
+	testURLParseError(t, err)
+}
+
+func TestClient_NewRequest(t *testing.T) {
 	c := NewClient("username", "password", nil)
 
 	inURL, outURL := "/foo", defaultBaseURL+"foo"
@@ -82,7 +98,7 @@ func TestNewRequest(t *testing.T) {
 	}
 }
 
-func TestDo(t *testing.T) {
+func TestClient_Do(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -108,9 +124,52 @@ func TestDo(t *testing.T) {
 	}
 }
 
+func TestClient_Do_noContent(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	req, _ := client.NewRequest("GET", "/", nil)
+	_, err := client.Do(context.Background(), req, nil, nil)
+	if err == nil {
+		t.Errorf("Expected error response.") // read EOF
+	}
+}
+
+func TestClient_Do_parseError(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "Hello, 世界")
+	})
+
+	got := "parse error"
+
+	req, _ := client.NewRequest("GET", "/", nil)
+	fn := func(r io.Reader, v interface{}) error {
+		return errors.New(got)
+	}
+	_, err := client.Do(context.Background(), req, fn, new(string))
+	if err == nil {
+		t.Errorf("Expected error response.")
+	}
+	if want := err.Error(); got != want {
+		t.Errorf("Error = %v, want %v", got, want)
+	}
+}
+
 func TestCheckResponse(t *testing.T) {
+	u, _ := url.Parse("/")
 	resp := &http.Response{
-		Request:    &http.Request{},
+		Request: &http.Request{
+			Method: "GET",
+			URL:    u,
+		},
 		StatusCode: http.StatusOK,
 		Body:       ioutil.NopCloser(strings.NewReader("-300, 帳號密碼不得為空值。")),
 	}
@@ -126,6 +185,9 @@ func TestCheckResponse(t *testing.T) {
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Error = %#v, want %#v", got, want)
+	}
+	if got, want := got.Error(), "GET /: 200 -300 帳號密碼不得為空值。"; got != want {
+		t.Errorf("Error = %v, want %v", got, want)
 	}
 }
 
