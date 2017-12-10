@@ -5,7 +5,8 @@ type StatusCode int
 
 // List of EVERY8D API status codes.
 const (
-	StatusContentIsEmpty                 = StatusCode(-24)
+	StatusTheContentIsEmpt               = StatusCode(-24)
+	StatusNoMobile                       = StatusCode(-41)
 	StatusWrongUsername                  = StatusCode(-100)
 	StatusWrongPassword                  = StatusCode(-101)
 	StatusUsernameAndPasswordAreRequired = StatusCode(-300)
