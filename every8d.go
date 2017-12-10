@@ -66,6 +66,7 @@ func (c *Client) NewRequest(method, urlStr string, body io.Reader) (*http.Reques
 	return req, nil
 }
 
+// Parser parses the response body into a object v.
 type Parser func(body io.Reader, v interface{}) error
 
 // Do sends an API request and returns the API response.
