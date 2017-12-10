@@ -123,7 +123,7 @@ func sanitizeURL(uri *url.URL) *url.URL {
 	return uri
 }
 
-// ErrorCodeResponse reports error caused by an API request.
+// ErrorResponse reports error caused by an API request.
 type ErrorResponse struct {
 	Response  *http.Response
 	ErrorCode StatusCode
