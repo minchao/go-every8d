@@ -41,3 +41,21 @@ func TestClient_Send(t *testing.T) {
 		t.Errorf("Send returned %+v, want %+v", got, want)
 	}
 }
+
+func TestClient_Send_unknownError(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/API21/HTTP/sendSMS.ashx", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, "-99, 主機端發生不明錯誤，請與廠商窗口聯繫。")
+	})
+
+	_, err := client.Send(context.Background(), Message{})
+	if err == nil {
+		t.Fatal("Expected error to be returned.")
+	}
+	if got, want := StatusCode(-99), err.(*ErrorResponse).ErrorCode; got != want {
+		t.Errorf("Error = %v, want %v", got, want)
+	}
+}
