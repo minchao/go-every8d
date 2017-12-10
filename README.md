@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/minchao/go-every8d)](https://goreportcard.com/report/github.com/minchao/go-every8d)
 [![codecov](https://codecov.io/gh/minchao/go-every8d/branch/master/graph/badge.svg)](https://codecov.io/gh/minchao/go-every8d)
 
-A Go client library for accessing the EVERY8D SMS API.
+A Go client library for accessing the [EVERY8D](http://global.every8d.com.tw/) SMS API.
 
 ## Installation
 
