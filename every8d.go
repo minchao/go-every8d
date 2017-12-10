@@ -90,8 +90,8 @@ func (c *Client) Do(ctx context.Context, req *http.Request, fn Parser, v interfa
 
 		// If the error type is *url.Error, sanitize its URL before returning.
 		if e, ok := err.(*url.Error); ok {
-			if url, err := url.Parse(e.URL); err == nil {
-				e.URL = sanitizeURL(url).String()
+			if u, err := url.Parse(e.URL); err == nil {
+				e.URL = sanitizeURL(u).String()
 				return nil, e
 			}
 		}
