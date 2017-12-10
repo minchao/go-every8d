@@ -87,6 +87,14 @@ func (c *Client) Do(ctx context.Context, req *http.Request, fn Parser, v interfa
 		default:
 		}
 
+		// If the error type is *url.Error, sanitize its URL before returning.
+		if e, ok := err.(*url.Error); ok {
+			if url, err := url.Parse(e.URL); err == nil {
+				e.URL = sanitizeURL(url).String()
+				return nil, e
+			}
+		}
+
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -102,6 +110,19 @@ func (c *Client) Do(ctx context.Context, req *http.Request, fn Parser, v interfa
 	return resp, nil
 }
 
+// sanitizeURL redacts the PWD parameter from the URL which may be exposed to the user.
+func sanitizeURL(uri *url.URL) *url.URL {
+	if uri == nil {
+		return nil
+	}
+	params := uri.Query()
+	if len(params.Get("PWD")) > 0 {
+		params.Set("PWD", "REDACTED")
+		uri.RawQuery = params.Encode()
+	}
+	return uri
+}
+
 // ErrorCodeResponse reports error caused by an API request.
 type ErrorResponse struct {
 	Response  *http.Response
@@ -112,7 +133,7 @@ type ErrorResponse struct {
 func (r *ErrorResponse) Error() string {
 	return fmt.Sprintf("%v %v: %d %d %v",
 		r.Response.Request.Method,
-		r.Response.Request.URL,
+		sanitizeURL(r.Response.Request.URL),
 		r.Response.StatusCode,
 		r.ErrorCode,
 		r.Message)

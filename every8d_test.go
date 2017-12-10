@@ -68,12 +68,6 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestClient_NewRequest_badURL(t *testing.T) {
-	c := NewClient("", "", nil)
-	_, err := c.NewRequest("GET", ":", nil)
-	testURLParseError(t, err)
-}
-
 func TestClient_NewRequest(t *testing.T) {
 	c := NewClient("username", "password", nil)
 
@@ -96,6 +90,12 @@ func TestClient_NewRequest(t *testing.T) {
 	if got, want := req.Header.Get("User-Agent"), c.UserAgent; got != want {
 		t.Errorf("NewRequest() User-Agent is %v, want %v", got, want)
 	}
+}
+
+func TestClient_NewRequest_badURL(t *testing.T) {
+	c := NewClient("", "", nil)
+	_, err := c.NewRequest("GET", ":", nil)
+	testURLParseError(t, err)
 }
 
 func TestClient_Do(t *testing.T) {
@@ -121,6 +121,23 @@ func TestClient_Do(t *testing.T) {
 	want := "Hello, 世界"
 	if !reflect.DeepEqual(*body, want) {
 		t.Errorf("Response body = %v, want %v", *body, want)
+	}
+}
+
+// Test that an error caused by the internal http client's Do() function does not leak the client PWD.
+func TestDo_sanitizeURL(t *testing.T) {
+	client := NewClient("username", "password", nil)
+	client.BaseURL = &url.URL{Scheme: "http", Host: "127.0.0.1:0", Path: "/"} // Use port 0 on purpose to trigger a dial TCP error, expect to get "dial tcp 127.0.0.1:0: connect: can't assign requested address".
+	req, err := client.NewRequest("GET", ".", nil)
+	if err != nil {
+		t.Fatalf("NewRequest returned unexpected error: %v", err)
+	}
+	_, err = client.Do(context.Background(), req, nil, nil)
+	if err == nil {
+		t.Fatal("Expected error to be returned.")
+	}
+	if strings.Contains(err.Error(), "PWD=password") {
+		t.Errorf("Do error contains password, should be redacted:\n%q", err)
 	}
 }
 
@@ -160,6 +177,25 @@ func TestClient_Do_parseError(t *testing.T) {
 	}
 	if want := err.Error(); got != want {
 		t.Errorf("Error = %v, want %v", got, want)
+	}
+}
+
+func TestSanitizeURL(t *testing.T) {
+	tests := []struct {
+		in, want string
+	}{
+		{"/?a=b", "/?a=b"},
+		{"/?PWD=password&a=b", "/?PWD=REDACTED&a=b"},
+		{"/?PWD=password&a=b&client_id=id", "/?PWD=REDACTED&a=b&client_id=id"},
+	}
+
+	for _, tt := range tests {
+		inURL, _ := url.Parse(tt.in)
+		want, _ := url.Parse(tt.want)
+
+		if got := sanitizeURL(inURL); !reflect.DeepEqual(got, want) {
+			t.Errorf("sanitizeURL(%v) returned %v, want %v", tt.in, got, want)
+		}
 	}
 }
 
