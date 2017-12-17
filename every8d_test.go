@@ -25,7 +25,7 @@ var (
 	server *httptest.Server
 )
 
-// setup sets up a test HTTP server along with a every9d.Client that is configured to talk to that test server.
+// setup sets up a test HTTP server along with a every8d.Client that is configured to talk to that test server.
 func setup() {
 	// test server
 	mux = http.NewServeMux()
