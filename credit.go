@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -12,7 +13,7 @@ import (
 func (c *Client) GetCredit(ctx context.Context) (float64, error) {
 	u, _ := url.Parse("API21/HTTP/getCredit.ashx")
 
-	req, err := c.NewRequest("GET", u.String(), nil)
+	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
 	if err != nil {
 		return 0.0, err
 	}

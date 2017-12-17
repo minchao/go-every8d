@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/csv"
 	"io"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -35,7 +36,7 @@ func (c *Client) Send(ctx context.Context, message Message) (*SendResponse, erro
 	u, _ := url.Parse("API21/HTTP/sendSMS.ashx")
 	u.RawQuery = q.Encode()
 
-	req, err := c.NewRequest("GET", u.String(), nil)
+	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
