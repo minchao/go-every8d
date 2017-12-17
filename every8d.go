@@ -25,7 +25,10 @@ type Client struct {
 	username string
 	password string
 
-	BaseURL   *url.URL
+	// Base URL for API requests, should always be specified with a trailing slash.
+	BaseURL *url.URL
+
+	// User agent used when communicating with the EVERY8D API.
 	UserAgent string
 }
 
@@ -48,6 +51,9 @@ func NewClient(username, password string, httpClient *http.Client) *Client {
 
 // NewRequest creates an API request.
 func (c *Client) NewRequest(method, urlStr string, body io.Reader) (*http.Request, error) {
+	if !strings.HasSuffix(c.BaseURL.Path, "/") {
+		return nil, fmt.Errorf("BaseURL must have a trailing slash, but %q does not", c.BaseURL)
+	}
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err

@@ -9,11 +9,16 @@ import (
 )
 
 func TestClient_Send(t *testing.T) {
-	setup()
+	client, mux, _, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/sendSMS.ashx", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"SB":   "note",
+			"MSG":  "Hello, 世界",
+			"DEST": "+88612345678",
+		})
 		fmt.Fprint(w, "87.00,1,1,0,00000000-0000-0000-0000-000000000000")
 	})
 
@@ -43,7 +48,7 @@ func TestClient_Send(t *testing.T) {
 }
 
 func TestClient_Send_unknownError(t *testing.T) {
-	setup()
+	client, mux, _, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/sendSMS.ashx", func(w http.ResponseWriter, r *http.Request) {

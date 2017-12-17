@@ -8,7 +8,7 @@ import (
 )
 
 func TestClient_GetCredit(t *testing.T) {
-	setup()
+	client, mux, _, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/getCredit.ashx", func(w http.ResponseWriter, r *http.Request) {
