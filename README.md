@@ -16,6 +16,8 @@ go get -u github.com/minchao/go-every8d
 
 ## Usage
 
+Import the `go-every8d` package.
+
 ```go
 import "github.com/minchao/go-every8d"
 ```
@@ -24,10 +26,26 @@ Construct a new API client, then use to access the EVERY8D API. For example:
 
 ```go
 client := every8d.NewClient("UID", "PWD", nil)
-ctx := context.Background()
+```
 
-// Retrieve your account balance
-credit, err := client.GetCredit(ctx)
+### Send an SMS
+
+```go
+message := every8d.Message{
+    Subject:         "Note",
+    Content:         "Hello, 世界",
+    Destination:     "+886987654321",
+}
+
+result, err := client.Send(context.Background(), message)
+```
+
+### Credit query
+
+Retrieve your account balance.
+
+```go
+credit, err := client.GetCredit(context.Background())
 ```
 
 ## License
