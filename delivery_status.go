@@ -52,16 +52,17 @@ func (c *Client) GetDeliveryStatus(ctx context.Context, batchID, pageNo string) 
 				break
 			}
 			// ignore error: wrong number of fields in line
-
-			cost, _ := strconv.ParseFloat(record[3], 64)
-			status, _ := strconv.Atoi(record[4])
-			response.Records = append(response.Records, DeliveryStatus{
-				Name:     record[0],
-				Mobile:   record[1],
-				SendTime: record[2],
-				Cost:     cost,
-				Status:   StatusCode(status),
-			})
+			if len(record) == 5 {
+				cost, _ := strconv.ParseFloat(record[3], 64)
+				status, _ := strconv.Atoi(record[4])
+				response.Records = append(response.Records, DeliveryStatus{
+					Name:     record[0],
+					Mobile:   record[1],
+					SendTime: record[2],
+					Cost:     cost,
+					Status:   StatusCode(status),
+				})
+			}
 		}
 
 		*v.(*DeliveryStatusResponse) = response
