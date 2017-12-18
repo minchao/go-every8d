@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-// DeliveryStatus
+// DeliveryStatus represents delivery status.
 type DeliveryStatus struct {
 	Name     string
 	Mobile   string
@@ -51,6 +51,7 @@ func (c *Client) GetDeliveryStatus(ctx context.Context, batchID, pageNo string) 
 			if err == io.EOF {
 				break
 			}
+			// ignore error: wrong number of fields in line
 
 			cost, _ := strconv.ParseFloat(record[3], 64)
 			status, _ := strconv.Atoi(record[4])
