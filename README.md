@@ -40,7 +40,13 @@ message := every8d.Message{
 result, err := client.Send(context.Background(), message)
 ```
 
-### Credit query
+### Query to retrieve the delivery status
+
+```go
+resp, err := client.GetDeliveryStatus(context.Background(), batchID, pageNo)
+```
+
+### Query credit
 
 Retrieve your account balance.
 
