@@ -31,15 +31,17 @@ type ReportMessage struct {
 func ParseReportMessage(r *http.Request) (*ReportMessage, error) {
 	values := r.URL.Query()
 
-	code, _ := strconv.Atoi(values.Get("STATUS"))
+	code, err := strconv.Atoi(values.Get("STATUS"))
+	if err != nil {
+		return nil, err
+	}
 
-	reportMessage := new(ReportMessage)
-	reportMessage.BatchID = values.Get("BATCHID")
-	reportMessage.Destination = values.Get("RM")
-	reportMessage.ReportTime = values.Get("RT")
-	reportMessage.StatusCode = StatusCode(code)
-	reportMessage.ReplyMessage = values.Get("SM")
-	reportMessage.MessageNo = values.Get("MR")
-
-	return reportMessage, nil
+	return &ReportMessage{
+		BatchID:      values.Get("BATCHID"),
+		Destination:  values.Get("RM"),
+		ReportTime:   values.Get("RT"),
+		StatusCode:   StatusCode(code),
+		ReplyMessage: values.Get("SM"),
+		MessageNo:    values.Get("MR"),
+	}, nil
 }
