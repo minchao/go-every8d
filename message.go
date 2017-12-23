@@ -22,4 +22,10 @@ type Message struct {
 	// SMS validity period of unit: minutes.
 	// if not specified, then the platform default validity period is 1440 minutes.
 	RetryTime int `url:"RETRYTIME,omitempty"`
+
+	// Message record no.
+	MessageNo string `url:"MR,omitempty"`
+
+	// Callback URL to receive the delivery status or reply report.
+	StatusReportURL string `url:"StatusReportURL,omitempty"`
 }
