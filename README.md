@@ -48,6 +48,14 @@ Retrieve your account balance.
 credit, err := client.GetCredit(context.Background())
 ```
 
+## Develop
+
+### Run all tests
+
+```go
+go test -v -race .
+```
+
 ## License
 
 This library is distributed under the BSD-style license found in the [LICENSE](./LICENSE) file.
