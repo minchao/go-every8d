@@ -31,6 +31,7 @@ func init() {
 
 	rootCmd.AddCommand(creditCmd)
 	rootCmd.AddCommand(deliveryStatusCmd)
+	rootCmd.AddCommand(sendCmd)
 }
 
 func Execute() {
