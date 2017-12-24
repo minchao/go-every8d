@@ -7,8 +7,6 @@ import (
 )
 
 var (
-	batchID, pageNo string
-
 	deliveryStatusCmd = &cobra.Command{
 		Use:   "delivery-status",
 		Short: "Query to retrieve the delivery status",
@@ -17,11 +15,14 @@ var (
 )
 
 func init() {
-	deliveryStatusCmd.Flags().StringVar(&batchID, "batch", "", "")
-	deliveryStatusCmd.Flags().StringVar(&pageNo, "page", "", "")
+	deliveryStatusCmd.Flags().StringP("bid", "b", "", "Batch ID")
+	deliveryStatusCmd.Flags().StringP("pno", "p", "", "Paging number")
 }
 
 func deliveryStatusFunc(cmd *cobra.Command, _ []string) {
+	batchID, _ := cmd.Flags().GetString("bid")
+	pageNo, _ := cmd.Flags().GetString("pno")
+
 	resp, err := client.GetDeliveryStatus(context.Background(), batchID, pageNo)
 	if err != nil {
 		er(err)

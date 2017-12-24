@@ -13,7 +13,7 @@ var creditCmd = &cobra.Command{
 	Run:   creditFunc,
 }
 
-func creditFunc(cmd *cobra.Command, args []string) {
+func creditFunc(cmd *cobra.Command, _ []string) {
 	credit, err := client.GetCredit(context.Background())
 	if err != nil {
 		er(err)
