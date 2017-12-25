@@ -25,7 +25,4 @@ type Message struct {
 
 	// Message record no.
 	MessageNo string `url:"MR,omitempty"`
-
-	// Callback URL to receive the delivery status or reply report.
-	StatusReportURL string `url:"StatusReportURL,omitempty"`
 }
