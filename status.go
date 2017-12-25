@@ -58,7 +58,7 @@ var statusText = map[StatusCode]string{
 	StatusReplayContent:                        "代表此呼叫為回覆簡訊之內容",
 }
 
-// String returns status code text.
+// Text returns status code text.
 func (c StatusCode) Text() string {
 	if str, ok := statusText[c]; ok {
 		return str

@@ -34,6 +34,7 @@ func init() {
 	rootCmd.AddCommand(sendCmd)
 }
 
+// Execute executes the root command.
 func Execute() {
 	rootCmd.Execute()
 }
