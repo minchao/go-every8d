@@ -8,7 +8,7 @@ import (
 // ReportMessage represents sending report or reply message.
 type ReportMessage struct {
 	// Batch ID.
-	BatchID string `url:"BATCHID"`
+	BatchID string `url:"BatchID"`
 
 	// Receive's mobile number.
 	// Format: +88612345678
@@ -37,7 +37,7 @@ func ParseReportMessage(r *http.Request) (*ReportMessage, error) {
 	}
 
 	return &ReportMessage{
-		BatchID:      values.Get("BATCHID"),
+		BatchID:      values.Get("BatchID"),
 		Destination:  values.Get("RM"),
 		ReportTime:   values.Get("RT"),
 		StatusCode:   StatusCode(code),
