@@ -26,10 +26,19 @@ type DeliveryStatusResponse struct {
 
 // GetDeliveryStatus retrieves the delivery status.
 func (c *Client) GetDeliveryStatus(ctx context.Context, batchID, pageNo string) (*DeliveryStatusResponse, error) {
+	return c.getDeliveryStatus(ctx, "API21/HTTP/getDeliveryStatus.ashx", batchID, pageNo)
+}
+
+// GetMMSDeliveryStatus retrieves the MMS delivery status.
+func (c *Client) GetMMSDeliveryStatus(ctx context.Context, batchID, pageNo string) (*DeliveryStatusResponse, error) {
+	return c.getDeliveryStatus(ctx, "API21/HTTP/MMS/getDeliveryStatus.ashx", batchID, pageNo)
+}
+
+func (c *Client) getDeliveryStatus(ctx context.Context, urlStr, batchID, pageNo string) (*DeliveryStatusResponse, error) {
 	q := url.Values{}
 	q.Set("BID", batchID)
 	q.Set("PNO", pageNo)
-	u, _ := url.Parse("API21/HTTP/getDeliveryStatus.ashx")
+	u, _ := url.Parse(urlStr)
 	u.RawQuery = q.Encode()
 
 	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
