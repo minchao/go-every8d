@@ -98,6 +98,7 @@ Available Commands:
   delivery-status Query to retrieve the delivery status
   help            Help about any command
   send            Send an SMS
+  send-mms        Send an MMS
   webhook         Webhook to receive the sending report and reply message
 
 Flags:
