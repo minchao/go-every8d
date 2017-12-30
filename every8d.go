@@ -72,6 +72,21 @@ func (c *Client) NewRequest(method, urlStr string, body io.Reader) (*http.Reques
 	return req, nil
 }
 
+// NewFormRequest creates an API POST request.
+func (c *Client) NewFormRequest(urlStr string, form url.Values) (*http.Request, error) {
+	form.Set("UID", c.username)
+	form.Set("PWD", c.password)
+
+	req, err := c.NewRequest(http.MethodPost, urlStr, strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	return req, nil
+}
+
 // Parser parses the response body into a object v.
 type Parser func(body io.Reader, v interface{}) error
 
@@ -80,12 +95,6 @@ type Parser func(body io.Reader, v interface{}) error
 // The provided ctx must be non-nil. If it is canceled or time out, ctx.Err() will be returned.
 func (c *Client) Do(ctx context.Context, req *http.Request, fn Parser, v interface{}) (*http.Response, error) {
 	req = req.WithContext(ctx)
-
-	q := req.URL.Query()
-	q.Set("UID", c.username)
-	q.Set("PWD", c.password)
-	req.URL.RawQuery = q.Encode()
-
 	resp, err := c.client.Do(req)
 	if err != nil {
 		select {

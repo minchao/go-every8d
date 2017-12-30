@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/csv"
 	"io"
-	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -35,13 +34,11 @@ func (c *Client) GetMMSDeliveryStatus(ctx context.Context, batchID, pageNo strin
 }
 
 func (c *Client) getDeliveryStatus(ctx context.Context, urlStr, batchID, pageNo string) (*DeliveryStatusResponse, error) {
-	q := url.Values{}
-	q.Set("BID", batchID)
-	q.Set("PNO", pageNo)
-	u, _ := url.Parse(urlStr)
-	u.RawQuery = q.Encode()
+	f := url.Values{}
+	f.Set("BID", batchID)
+	f.Set("PNO", pageNo)
 
-	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
+	req, err := c.NewFormRequest(urlStr, f)
 	if err != nil {
 		return nil, err
 	}

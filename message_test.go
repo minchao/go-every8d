@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/google/go-querystring/query"
+	"github.com/go-playground/form"
 )
 
 func TestMessage_toURLValues(t *testing.T) {
@@ -51,7 +51,7 @@ func TestMessage_toURLValues(t *testing.T) {
 	}
 
 	for i, tt := range tests {
-		q, _ := query.Values(tt.in)
+		q, _ := form.NewEncoder().Encode(tt.in)
 
 		if got, want := q, tt.want; !reflect.DeepEqual(got, want) {
 			t.Errorf("Message to url.Values %d. returned %v, want %v", i, got, want)

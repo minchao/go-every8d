@@ -13,7 +13,7 @@ func TestClient_GetDeliveryStatus(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/getDeliveryStatus.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		testFormValues(t, r, values{
 			"BID": "00000000-0000-0000-0000-000000000000",
 			"PNO": "1",
@@ -57,7 +57,7 @@ func TestClient_GetMMSDeliveryStatus(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/MMS/getDeliveryStatus.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		testFormValues(t, r, values{
 			"BID": "00000000-0000-0000-0000-000000000000",
 			"PNO": "1",

@@ -13,7 +13,7 @@ func TestClient_Send(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/sendSMS.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		testFormValues(t, r, values{
 			"SB":   "note",
 			"MSG":  "Hello, 世界",
@@ -52,7 +52,7 @@ func TestClient_Send_unknownError(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/sendSMS.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		fmt.Fprint(w, "-99, 主機端發生不明錯誤，請與廠商窗口聯繫。")
 	})
 

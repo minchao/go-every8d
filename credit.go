@@ -4,16 +4,13 @@ import (
 	"context"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"net/url"
 	"strconv"
 )
 
 // GetCredit retrieves your account balance.
 func (c *Client) GetCredit(ctx context.Context) (float64, error) {
-	u, _ := url.Parse("API21/HTTP/getCredit.ashx")
-
-	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
+	req, err := c.NewFormRequest("API21/HTTP/getCredit.ashx", url.Values{})
 	if err != nil {
 		return 0.0, err
 	}

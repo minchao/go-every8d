@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/csv"
 	"io"
-	"net/http"
-	"net/url"
 	"strconv"
 
-	"github.com/google/go-querystring/query"
+	"github.com/go-playground/form"
 )
 
 // SendResponse represents the response of send an SMS.
@@ -32,11 +30,24 @@ type SendResponse struct {
 
 // Send sends an SMS.
 func (c *Client) Send(ctx context.Context, message Message) (*SendResponse, error) {
-	q, _ := query.Values(message)
-	u, _ := url.Parse("API21/HTTP/sendSMS.ashx")
-	u.RawQuery = q.Encode()
+	return c.send(ctx, "API21/HTTP/sendSMS.ashx", message)
+}
 
-	req, err := c.NewRequest(http.MethodGet, u.String(), nil)
+// MMS represents an MMS object.
+type MMS struct {
+	Message
+
+	// Image file, binary base64 encoded.
+	Attachment string `form:"ATTACHMENT"`
+
+	// Image file extension, support jpg/jpeg/png/git.
+	Type string `form:"TYPE"`
+}
+
+func (c *Client) send(ctx context.Context, urlStr string, message interface{}) (*SendResponse, error) {
+	f, _ := form.NewEncoder().Encode(message)
+
+	req, err := c.NewFormRequest(urlStr, f)
 	if err != nil {
 		return nil, err
 	}

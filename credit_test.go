@@ -12,7 +12,7 @@ func TestClient_GetCredit(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/getCredit.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		fmt.Fprint(w, "88")
 	})
 
@@ -30,7 +30,7 @@ func TestClient_GetCredit_empty(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/getCredit.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		fmt.Fprint(w, "")
 	})
 
@@ -45,7 +45,7 @@ func TestClient_GetCredit_invalid(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/API21/HTTP/getCredit.ashx", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
+		testMethod(t, r, "POST")
 		fmt.Fprint(w, "invalid")
 	})
 
