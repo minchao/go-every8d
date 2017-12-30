@@ -13,6 +13,8 @@ const (
 	StatusWrongUsername                        = StatusCode(-100)
 	StatusWrongPassword                        = StatusCode(-101)
 	StatusUsernameAndPasswordAreRequired       = StatusCode(-300)
+	StatusImageRequired                        = StatusCode(-304)
+	StatusImageTypeRequired                    = StatusCode(-305)
 	StatusSent                                 = StatusCode(0)
 	StatusMessageReceived                      = StatusCode(100)
 	StatusDeliveryFailureDueMobile             = StatusCode(101)
@@ -40,6 +42,8 @@ var statusText = map[StatusCode]string{
 	StatusWrongUsername:                        "無此帳號。",
 	StatusWrongPassword:                        "密碼錯誤。",
 	StatusUsernameAndPasswordAreRequired:       "帳號密碼不得為空值。",
+	StatusImageRequired:                        "未上傳圖片",
+	StatusImageTypeRequired:                    "檔案副檔名類型不得為空",
 	StatusSent:                                 "已發送",
 	StatusMessageReceived:                      "發送成功",
 	StatusDeliveryFailureDueMobile:             "手機端因素未能送達",
