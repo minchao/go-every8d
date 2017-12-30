@@ -160,6 +160,12 @@ func TestClient_NewRequest_errorForNoTrailingSlash(t *testing.T) {
 	}
 }
 
+func TestClient_NewFormRequest_badURL(t *testing.T) {
+	c := NewClient("", "", nil)
+	_, err := c.NewFormRequest(":", url.Values{})
+	testURLParseError(t, err)
+}
+
 func TestClient_Do(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
